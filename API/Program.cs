@@ -30,6 +30,8 @@ uygulama boyunca ayakta kalmaz
                 try {
                     var context = services.GetRequiredService<StoreContext>();
                     await context.Database.MigrateAsync();
+               // static method seeding data program basladiginda yuklenecek
+               await StoreContextSeed.SeedAsync(context,loggerFactory);
                 }catch(Exception ex){
                     var logger = loggerFactory.CreateLogger<Program>();
                     logger.LogError(ex,"An error occired during migration");
