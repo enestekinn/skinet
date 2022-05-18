@@ -46,6 +46,14 @@ Bunu Repository Pattern ile yapacagiz
 
             return await _repo.GetProductByIdAsync(id);
         }
+        [HttpGet("brands")]
+        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands(){
+            return Ok(await _repo.GetProductsBrandsAsync());
+        }
+         [HttpGet("types")]
+        public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductTypes(){
+            return Ok(await _repo.GetProductTypeAsync());
+        }
     }
 
 }
@@ -65,4 +73,7 @@ ControllerBase  vs Controller
  and adds some members that are only needed to support Views.
 
  Request ti asenkron yapmazsak  method tamamlana kadar birsey yapamayiz
+
+ [ApiController]  un gorevi  controllera request geldiginde validation 
+ yapiyor GetProduct da integer gelip gelmedigini kontrol ediyor.
     */

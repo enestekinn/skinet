@@ -12,7 +12,7 @@ namespace Infrastructure.Data
     public class StoreContextSeed
     {
 
-        // Bu classin olayi 
+        // Bu classin olayi uygulama ilk calistiginda verileri yuklemek.
         public static async Task SeedAsync(
             StoreContext context, ILoggerFactory loggerFactory)
         {
