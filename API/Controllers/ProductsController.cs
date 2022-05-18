@@ -76,4 +76,10 @@ ControllerBase  vs Controller
 
  [ApiController]  un gorevi  controllera request geldiginde validation 
  yapiyor GetProduct da integer gelip gelmedigini kontrol ediyor.
+
+GetProducts calistiginda productType ve productBrand null geliyor 
+Bunu 2 cozumu var 
+Lazy Load => ef will automatically load any navigation properties 
+such as brand and type  whenever we request particular entity 
+
     */
