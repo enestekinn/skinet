@@ -10,5 +10,9 @@ namespace Infrastructure.Data
         }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductBrand> ProductBrands { get; set; }
+        public DbSet<ProductType> ProductTypes {get; set;}
     }
 }
+// Migration yapildiginda Product nesnesi ProductBrands,ProductTypes 
+// icin  Foreign Key olusturacak.
