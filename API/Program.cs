@@ -1,5 +1,11 @@
+using System;
+using System.Threading.Tasks;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace API
 {
@@ -7,10 +13,30 @@ namespace API
     {
 
         // when program runs  this method will be executed 
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            
-            CreateHostBuilder(args).Build().Run();
+/* 
+    dataContext e erismek istiyoruz ama burada services disindayiz 
+yani Startup classin disindayiz  bir nesne yarattigimizda o nesne 
+uygulama boyunca ayakta kalmaz
+
+ */            
+            //CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            using (var scope = host.Services.CreateScope()){
+                var services = scope.ServiceProvider;
+                var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+                try {
+                    var context = services.GetRequiredService<StoreContext>();
+                    await context.Database.MigrateAsync();
+                }catch(Exception ex){
+                    var logger = loggerFactory.CreateLogger<Program>();
+                    logger.LogError(ex,"An error occired during migration");
+                }
+            }
+            // run demeyi unutma 
+            host.Run();
         }
 
 
