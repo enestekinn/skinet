@@ -1,4 +1,6 @@
 
+using API.Helpers;
+using AutoMapper;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
@@ -14,25 +16,25 @@ namespace API
     public class Startup
     {
 
-// Microsoft  un default olarak verdigi constructorin alternatifi
+        // Microsoft  un default olarak verdigi constructorin alternatifi
 
         private readonly IConfiguration _config;
         public Startup(IConfiguration config)
         {
             _config = config;
-            
+
         }
 
 
-/*      
-   public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        /*      
+           public Startup(IConfiguration configuration)
+                {
+                    Configuration = configuration;
+                }
 
-        public IConfiguration Configuration { get; }
+                public IConfiguration Configuration { get; }
 
-         */
+                 */
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // any services we add to our app  we can inject into other classes inside our app
@@ -53,7 +55,9 @@ namespace API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIv5", Version = "v1" });
             });
-            services.AddScoped<IProductRepository,ProductRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
+            services.AddAutoMapper(typeof(MappingProfiles));
             /* 
             Repository sinifi controller a inject edilecek yani her yeni
             request de yeni bir repository class i olusacak
@@ -67,15 +71,19 @@ Biz genellikle services.AddScoped();   kullanicaz.
 we don't need to worry about disposing of the resources created when
 a request comes in.
 
+Generictype i service bu sekilde tanimliyoruz.
+  services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
+
+
 
              */
-            
+
             //services.AddTransient();
-           // services.AddSingleton();
+            // services.AddSingleton();
         }
 
-      
-      
+
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         // Configure methodlarin sirasi onemli.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -90,6 +98,9 @@ a request comes in.
             app.UseHttpsRedirection();
 
             app.UseRouting();
+    //api yimizda olan resmi https://localhost:5001/images/products/sb-ts1.png  dosya
+    //yolu ile acamiyoruz o yuzden ekledik.
+            app.UseStaticFiles();
 
             app.UseAuthorization();
 
