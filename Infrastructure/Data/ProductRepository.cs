@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Core.Entities;
 using Core.Interfaces;
@@ -16,7 +17,16 @@ namespace Infrastructure.Data
 
         public async Task<Product> GetProductByIdAsync(int id)
         {
+/* 
+ORNEK
+var typeId = 1;
+var products =  _context.Products
+.Where(x => x.ProductBrandId == typeId).Include(x =>x.ProductType).ToListAsync();
+ */
+ 
+
             return await _context.Products
+            // Bu methodu genericRepistoride kullandik.
             .Include(p => p.ProductType)
              .Include(p => p.ProductBrand)
              
