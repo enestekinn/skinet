@@ -1,21 +1,20 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
+using API.Erros;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
-using Infrastructure.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
 
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductsController : ControllerBase
+    // [ApiController]
+    // [Route("api/[controller]")]
+    public class ProductsController : BaseApiController
     {
     
 
@@ -68,11 +67,18 @@ return Ok(_mapper.Map<IReadOnlyList<Product>,IReadOnlyList<ProductToReturnDto>>(
         }
 
         [HttpGet("{id}")]
+
+// hata oldugunda ApiResponse sinifindaki modeli donder
+   [ProducesResponseType(StatusCodes.Status200OK)]
+      [ProducesResponseType(typeof(ApiResponse),StatusCodes.Status404NotFound)]
+
         public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
         {
             // isimler anlasilmasi icin uzun verilmeli
           var spec = new ProductsWithTypesAndBrandsSpecification(id);
           var product = await _productsRepo.GetEntityWithSpec(spec);
+          // product null
+          if(product == null ) return NotFound(new  ApiResponse(404));
 
 return _mapper.Map<Product,ProductToReturnDto>(product);
 

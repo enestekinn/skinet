@@ -1,7 +1,7 @@
-
+using API.Extensions;
 using API.Helpers;
+using API.Middleware;
 using AutoMapper;
-using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 
 namespace API
 {
@@ -44,20 +43,30 @@ namespace API
         {
 
 
+
+
             services.AddControllers();
+
 
             // db context lifetime of request 
             services.AddDbContext<StoreContext>(
                 x => x.UseSqlite(_config.GetConnectionString(
                     "DefaultConnection")));
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIv5", Version = "v1" });
-            });
-            services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
+
+            //refactoring this class 
+                    services.AddApplicationServices();
+
+// extension func
+            services.AddSwaggerDocumentation();
+
+
+
+         
             services.AddAutoMapper(typeof(MappingProfiles));
+
+
+
             /* 
             Repository sinifi controller a inject edilecek yani her yeni
             request de yeni bir repository class i olusacak
@@ -88,12 +97,33 @@ Generictype i service bu sekilde tanimliyoruz.
         // Configure methodlarin sirasi onemli.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            app.UseMiddleware<ExceptionMiddleware>();
+
+                
+            
             if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPIv5 v1"));
+            {// burasi sadece developer  modda calisiyor production'da degil
+            // asagidaki kod yerine yukaridaki  app.UseMiddleware<ExceptionMiddleware>();
+            // kullaniyoruz.
+            
+              //  app.UseDeveloperExceptionPage();
+
+         
             }
+
+/* 
+request geldi fakat bizim oyle bir methodumuz yoksa o request bizim
+error controllerimizi calistiracak.
+SORU =>
+how is "/errors/{0}" going to pass the correct placeholder. 
+I do not understand  how 0 is replaced with status code.
+CEVAP =>
+The {0} is just a placeholder for a number that will be replaced
+ with the status code integer automatically during redirect.
+
+ */
+app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             app.UseHttpsRedirection();
 
@@ -103,6 +133,9 @@ Generictype i service bu sekilde tanimliyoruz.
             app.UseStaticFiles();
 
             app.UseAuthorization();
+
+// we did this as extension function
+            app.UseSwaggerDocumentation();
 
             app.UseEndpoints(endpoints =>
             {
