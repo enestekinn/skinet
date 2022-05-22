@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Reflection;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,31 @@ namespace Infrastructure.Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(
                 Assembly.GetExecutingAssembly());
+
+/*
+HATASI ICIN KULLANIYORUZ
+  SQLite cannot order by expressions of type 'decimal'. Convert the values to a supported type or use LINQ to Objects to order the results."
+ decimal degeri  dobule a ceviriyoruz.
+
+ SORU => 
+ why are we using decimal over double in this case if decimal is not supported.
+ CEVAP =>
+ Decimal is only not supported in Sqlite which we only use for development.
+  I didn’t want to build the app based on SQLite limitations as this is not the DB we would use in production.
+   Double would work fine but you then need to convert it to currency backwards and forwards, it just seemed easier to work with decimals here.
+*/
+                if(Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
+                {
+                    foreach(var entityType in modelBuilder.Model.GetEntityTypes()){
+                        var properties = entityType.ClrType
+                        .GetProperties().Where(p => p.PropertyType == typeof(decimal));
+                        foreach(var property in properties){
+                            modelBuilder.Entity(entityType.Name).Property(property.Name)
+                            .HasConversion<double>();
+                        }
+                    }
+
+                }
         }
     }
 }
@@ -35,5 +61,4 @@ Alternatively the configurations can be added directly to the OnModelCreating me
 
 modelBuilder.Entity<Product>().Property(x => x.Name).IsRequired().
 
-Thanks, 
  */

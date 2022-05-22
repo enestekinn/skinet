@@ -64,6 +64,11 @@ namespace API
 
          
             services.AddAutoMapper(typeof(MappingProfiles));
+            services.AddCors( opt => {
+                opt.AddPolicy("CorsPolicy", policy =>{
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+                });
+            });
 
 
 
@@ -131,6 +136,9 @@ app.UseStatusCodePagesWithReExecute("/errors/{0}");
     //api yimizda olan resmi https://localhost:5001/images/products/sb-ts1.png  dosya
     //yolu ile acamiyoruz o yuzden ekledik.
             app.UseStaticFiles();
+
+
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Dtos;
 using API.Erros;
+using API.Helpers;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
@@ -57,13 +58,27 @@ Bunu Repository Pattern ile yapacagiz
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts()
+        public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts(
+       [FromQuery] ProductSpecParams productParams
+            //Daha clean olmasi icin yeni sinif olusturduk
+            // string sort,
+            // int? brandId,
+            // int? typeId
+            )
         {
-            var spec = new ProductsWithTypesAndBrandsSpecification();
+            // var spec = new ProductsWithTypesAndBrandsSpecification(sort,brandId,typeId);
+            var spec = new ProductsWithTypesAndBrandsSpecification(productParams);
+            var countSpec = new ProductWithFiltersForCountSpecification(productParams);
+            var totalItems = await _productsRepo.CountAsync(countSpec);
             var products = await _productsRepo.ListAsync(spec);
 
+var data = _mapper.Map<IReadOnlyList<Product>,IReadOnlyList<ProductToReturnDto>>(products);
            // var products = await _productsRepo.ListAllAsync();
-return Ok(_mapper.Map<IReadOnlyList<Product>,IReadOnlyList<ProductToReturnDto>>(products));
+return Ok(new Pagination<ProductToReturnDto>(
+    productParams.PageIndex,
+    productParams.PageSize,
+    totalItems,
+    data));
         }
 
         [HttpGet("{id}")]
@@ -121,5 +136,19 @@ GetProducts calistiginda productType ve productBrand null geliyor
 Bunu 2 cozumu var 
 Lazy Load => ef will automatically load any navigation properties 
 such as brand and type  whenever we request particular 
+
+
+parametreyi query string olarak gonderiyoruz fakat controlerda object 
+Http get request kullandigimizda bodymiz yok bu controleler icin biraz kafa karistirici
+HttGet ile object i birbirine baglayamiyor. asgagidaki gibi hata aliyoruz
+
+{
+    "type": "https://tools.ietf.org/html/rfc7231#section-6.5.13",
+    "title": "Unsupported Media Type",
+    "status": 415,
+    "traceId": "00-58e9d201e84ee24487ce5d11d3691aca-515d9253e83cd64b-00"
+}
+
+Duzeltmek icin objecye  [FromQuery] i kullaniyoruz.
 
     */
