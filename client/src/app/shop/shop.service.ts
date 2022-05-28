@@ -5,6 +5,7 @@ import  {IBrand} from '../shared/models/brands';
 import { IType } from '../shared/models/productType';
 import { map } from 'rxjs/operators'; // rxjs calismazsa bunu import et 
 import { ShopParams } from '../shared/models/shopParams';
+import { IProduct } from '../shared/models/product';
 
 @Injectable({
   // root refer to app module
@@ -48,6 +49,12 @@ export class ShopService {
       return response.body; // response.body = IPagination object
     })
     );
+  }
+
+
+  // product details sayfasinda gostermek icin yeni method olusturuyoruz.
+  getProduct(id: number){
+return this.http.get<IProduct>(this.baseUrl + 'products/'+ id);
   }
 
   getBrands(){
