@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using API.Erros;
 
 namespace API.Errors
 {

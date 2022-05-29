@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Dtos;
-using API.Erros;
+using API.Errors;
 using API.Helpers;
 using AutoMapper;
 using Core.Entities;
