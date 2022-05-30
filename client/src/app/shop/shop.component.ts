@@ -16,7 +16,9 @@ export class ShopComponent implements OnInit {
   static default value is false  our input element  dont depend on  anything else
   we dont put any conditions here to decide whether or not to show it then we can set the static property is equal to 'true' 
    */
-  @ViewChild('search',{static: true}) searchTerm: ElementRef;
+  //@ViewChild('search',{static: true}) searchTerm: ElementRef;
+  // bunun staticligini kaldirdik progress bar   ciktiginda buna erisemiyoruz halbuki statik degismemisi lazim 
+  @ViewChild('search',{static: false}) searchTerm: ElementRef;
   products: IProduct [];
   brands: IBrand [];
   types: IType[];

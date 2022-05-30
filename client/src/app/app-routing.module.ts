@@ -3,22 +3,22 @@ import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent } from './core/not-found/not-found.component';
 import { ServerErrorComponent } from './core/server-error/server-error.component';
 import { TestErrorComponent } from './core/test-error/test-error.component';
-import { HomeComponent } from './home.component';
-import { ProductDetailsComponent } from './shop/product-details/product-details.component';
-import { ShopComponent } from './shop/shop.component';
+import { HomeComponent } from './home/home.component';
+
 
 
 const routes: Routes = [
-  {path: '', component: HomeComponent},
-  {path: 'test-error', component: TestErrorComponent},
-  {path: 'server-error', component: ServerErrorComponent},
-  {path: 'not-found', component: NotFoundComponent},
+  {path: '', component: HomeComponent,data: {breadcrumb: 'Home' }},
+  {path: 'test-error', component: TestErrorComponent, data: {breadcrumb: 'Test Errors'}},
+  {path: 'server-error', component: ServerErrorComponent, data: {breadcrumb: 'Server Errors'}},
+  {path: 'not-found', component: NotFoundComponent, data: {breadcrumb: 'Not Found'}},
   //{path: 'shop' , component: ShopComponent},
-  {path: 'shop' ,loadChildren: () => import('./shop/shop.module').then(mod => mod.ShopModule)},
-  {path: 'shop/:id', component: ProductDetailsComponent},// navigate yaparken id bu sekilde gonderiyoruz
+  {path: 'shop' ,loadChildren: () => import('./shop/shop.module').then(mod => mod.ShopModule),
+  data: {breadcrumb: 'Shop '}},
+ // {path: 'shop/:id', component: ProductDetailsComponent},// navigate yaparken id bu sekilde gonderiyoruz
   //pathMatch  matches against the entire url and it is important to do this when we redirecting empty path route
   // we need this when we are trying to  redirect sb who typed in bad url will use this particular route to get them back to the home page 
-  {path: '**', redirectTo: '',pathMatch: 'full'} // this is  default page 
+  {path: '**', redirectTo: 'not-found',pathMatch: 'full'} // this is  default page 
 ];
 
 @NgModule({

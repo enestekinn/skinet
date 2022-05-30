@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IProduct } from 'src/app/shared/models/product';
+import { BreadcrumbService } from 'xng-breadcrumb';
 import { ShopService } from '../shop.service';
 
 @Component({
@@ -12,7 +13,14 @@ export class ProductDetailsComponent implements OnInit {
   product: IProduct
 
   //activateRoute rootdaki parametreye ulasmak icin kullaniyoruz.
-  constructor(private shopService: ShopService,private activateRoute: ActivatedRoute) { }
+  constructor(
+    private shopService: ShopService,
+    private activateRoute: ActivatedRoute,
+    private bcService: BreadcrumbService
+     ) {
+       // progress bar calistiginda arka planda urunun adi geliyor onu burada empty yapiyoruz.
+       this.bcService.set('@productDetails',' ');
+      }
 
   ngOnInit(): void {
     this.loadProduct();
@@ -24,6 +32,7 @@ export class ProductDetailsComponent implements OnInit {
     
     this.shopService.getProduct(+this.activateRoute.snapshot.paramMap.get('id')).subscribe(product => {
       this.product = product
+      this.bcService.set('@productDetails',product.name)
     },
     error =>{
 console.log(error);

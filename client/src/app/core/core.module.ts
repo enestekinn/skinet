@@ -6,15 +6,18 @@ import { TestErrorComponent } from './test-error/test-error.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { ServerErrorComponent } from './server-error/server-error.component';
 import { ToastrModule } from 'ngx-toastr';
+import { SectionHeaderComponent } from './section-header/section-header.component';
+import { BreadcrumbModule } from 'xng-breadcrumb';
 
 
 
 @NgModule({
-  declarations: [NavBarComponent, TestErrorComponent, NotFoundComponent, ServerErrorComponent],
+  declarations: [NavBarComponent, TestErrorComponent, NotFoundComponent, ServerErrorComponent, SectionHeaderComponent],
   imports: [
     CommonModule,
     // routeri kullanmak icin ekledik
     RouterModule,
+    BreadcrumbModule, // yeni paket ekledigimizde core module de belirtiyoruz.
     ToastrModule.forRoot({
       positionClass: 'toast-bottom-right',
       preventDuplicates: true
@@ -22,6 +25,8 @@ import { ToastrModule } from 'ngx-toastr';
     
   ],
   // navbar com.  core in altina koyduktan sonra burada tanimladik.
-  exports: [NavBarComponent]
+  exports: [NavBarComponent
+    // bunu koymazsak app component  html de bu component gozukmuyor.
+    ,SectionHeaderComponent]
 })
 export class CoreModule { }
