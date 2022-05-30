@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { IProduct } from 'src/app/shared/models/product';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ShopService } from '../shop.service';
+import {BasketService} from "../../basket/basket.service";
 
 @Component({
   selector: 'app-product-details',
@@ -10,13 +11,15 @@ import { ShopService } from '../shop.service';
   styleUrls: ['./product-details.component.scss']
 })
 export class ProductDetailsComponent implements OnInit {
-  product: IProduct
+  product: IProduct;
+  quantity = 1;
 
   //activateRoute rootdaki parametreye ulasmak icin kullaniyoruz.
   constructor(
     private shopService: ShopService,
     private activateRoute: ActivatedRoute,
-    private bcService: BreadcrumbService
+    private bcService: BreadcrumbService,
+    private basketService: BasketService
      ) {
        // progress bar calistiginda arka planda urunun adi geliyor onu burada empty yapiyoruz.
        this.bcService.set('@productDetails',' ');
@@ -24,14 +27,28 @@ export class ProductDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadProduct();
+
+  }
+
+  addItemToBasket(){
+    this.basketService.addItemToBasket(this.product,this.quantity);
+  }
+  incrementQuantity(){
+    this.quantity++;
+  }
+  decrementQuantity(){
+    if (this.quantity > 1){
+      this.quantity--;
+
+    }
   }
 
   loadProduct(){
-    // +  ifadeyi string e cevirmek icin  
+    // +  ifadeyi string e cevirmek icin
     // id ismini daha once router da belirledik.
-    
+
     this.shopService.getProduct(+this.activateRoute.snapshot.paramMap.get('id')).subscribe(product => {
-      this.product = product
+      this.product = product;
       this.bcService.set('@productDetails',product.name)
     },
     error =>{
@@ -42,9 +59,9 @@ console.log(error);
 }
 
 
-// Hard Coding Ornegi 
+// Hard Coding Ornegi
 
-/* 
+/*
 export class ProductDetailsComponent implements OnInit {
   product: IProduct
 

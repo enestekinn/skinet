@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { IPagination } from '../shared/models/pagination';
 import  {IBrand} from '../shared/models/brands';
 import { IType } from '../shared/models/productType';
-import { map } from 'rxjs/operators'; // rxjs calismazsa bunu import et 
+import { map } from 'rxjs/operators'; // rxjs calismazsa bunu import et
 import { ShopParams } from '../shared/models/shopParams';
 import { IProduct } from '../shared/models/product';
 
@@ -33,16 +33,16 @@ export class ShopService {
     if(shopParams.search){
       params = params.append('search',shopParams.search);
     }
-    
-    
+
+
       params = params.append('sort',shopParams.sort);
 
 
       params = params.append('pageIndex',shopParams.pageNumber.toString());
-      params = params.append('pageIndex',shopParams.pagesize.toString());
-    
+      params = params.append('pageIndex',shopParams.pageSize.toString());
+
     // observing response giving us http respond instead of body of request we have to extract the body out of this.
-    
+
     return this.http.get<IPagination>(this.baseUrl + 'products',{observe: 'response',params})
     .pipe(
     map(response => {

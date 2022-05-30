@@ -10,7 +10,7 @@
                 [value]="sort.value">
                     {{sort.name}}
                 </option>
-           
+
             </select>
 
             <h5 class="text-warning ml-3">Brands</h5>
@@ -23,12 +23,12 @@
                 </li>
               </ul>
             </ng-container>
-              <h5 class="text-warning ml-3">Types</h5> 
+              <h5 class="text-warning ml-3">Types</h5>
               <!--
                   Didn't understand why to bind [value]=brand.id,
                     i mean anyway we are passing   brand.id in the argument. nor we are using value anywhere.
           The 'value' is what is passed when we submit here inside a form but since we are passing the value by a click event
-           you can remove the value here if you like.  I'll make a note to update the lesson.          
+           you can remove the value here if you like.  I'll make a note to update the lesson.
                 -->
               <ul class="list-group my-3">
                   <li class="list-group-item" *ngFor="let type  of types"
@@ -38,25 +38,25 @@
 
           {{type.name}}
                   </li>
-              
-              
+
+
               </ul>
         </section>
         <section class="col-9">
             <div class="d-flex justify-content-between align-items-center pb-2">
                 <app-paging-header
                     [totalCount] = "totalCount"
-                    [pageSize] = "this.shopParams.pagesize"
+                    [pageSize] = "this.shopParams.pageSize"
                     [pageNumber]= "this.shopParams.pageNumber"
                     ></app-paging-header>
-                
+
          <!-- we will access #search inside our component -->
                 <div class="form-inline " *ngIf="products">
                     <input (keyup.enter)="onSearch()" class="form-control mr-2" #search style="width: 300px" placeholder="Search" type="text">
                     <button (click)="onSearch()" class="btn btn-outline-primary my-2">Search</button>
                     <button (click)="onReset()" class="btn btn-outline-success ml-2 my-2">Reset</button>
                 </div>
-            </div>  
+            </div>
 
             <div class="row">
                 <div class="col-4 mb-4" *ngFor="let productItem of products">
@@ -70,14 +70,14 @@
                  [totalCount] = "totalCount"
                  (pageChanged) = "onPageChanged($event)"
                  >
-                   
+
                  </app-pager>
                 </div>
-            
+
         </section>
     </div>
 </div>
-<!-- 
+<!--
        (pageChanged) = "onPageChanged($event)"
        is a method inside the parent component method.
        app-pager is a child   shop component is a parent  we are passing it onPageChagend event

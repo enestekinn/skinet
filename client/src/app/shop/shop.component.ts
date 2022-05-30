@@ -14,10 +14,10 @@ export class ShopComponent implements OnInit {
   // our search field input is a child of our shop component  we are access #search
   /*
   static default value is false  our input element  dont depend on  anything else
-  we dont put any conditions here to decide whether or not to show it then we can set the static property is equal to 'true' 
+  we dont put any conditions here to decide whether or not to show it then we can set the static property is equal to 'true'
    */
   //@ViewChild('search',{static: true}) searchTerm: ElementRef;
-  // bunun staticligini kaldirdik progress bar   ciktiginda buna erisemiyoruz halbuki statik degismemisi lazim 
+  // bunun staticligini kaldirdik progress bar   ciktiginda buna erisemiyoruz halbuki statik degismemisi lazim
   @ViewChild('search',{static: false}) searchTerm: ElementRef;
   products: IProduct [];
   brands: IBrand [];
@@ -51,9 +51,9 @@ getProducts(){
   this.shopService.getProducts(this.shopParams).subscribe(response => {
     this.products = response.data;
     this.shopParams.pageNumber = response.pageIndex;
-    this.shopParams.pagesize = response.pageSize;
+    this.shopParams.pageSize = response.pageSize;
     this.totalCount = response.count;
-    
+
   }, error => {
 
     console.log(error);
@@ -95,7 +95,7 @@ onPageChanged(event: any){
     this.shopParams.pageNumber = event;
     this.getProducts();
   }
- 
+
 }
 
 onSearch(){
