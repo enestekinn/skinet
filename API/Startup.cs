@@ -2,7 +2,9 @@ using API.Extensions;
 using API.Helpers;
 using API.Middleware;
 using AutoMapper;
+using Core.Interfaces.Identity;
 using Infrastructure.Data;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -54,6 +56,13 @@ namespace API
                 x => x.UseSqlite(_config.GetConnectionString(
                     "DefaultConnection")));
 
+            // we are completely seperated db  for identity it is going to be a physical contact boundary between
+            // our own  app database and the identity database
+            services.AddDbContext<AppIdentityDbContext>(x =>
+            {
+                x.UseSqlite(_config.GetConnectionString("IdentityConnection"));
+            });
+
             services.AddSingleton<IConnectionMultiplexer>(c =>
             {
                 var configuration = ConfigurationOptions
@@ -65,7 +74,7 @@ namespace API
 
             //refactoring this class 
                     services.AddApplicationServices();
-
+                    services.AddIdentityServices(_config);
 // extension func
             services.AddSwaggerDocumentation();
 
@@ -149,6 +158,8 @@ app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             app.UseCors("CorsPolicy");
 
+// UseAuthentication  UseAuthorization once gelmeli 
+app.UseAuthentication();
             app.UseAuthorization();
 
 // we did this as extension function
