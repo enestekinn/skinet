@@ -8,6 +8,7 @@ import { ServerErrorComponent } from './server-error/server-error.component';
 import { ToastrModule } from 'ngx-toastr';
 import { SectionHeaderComponent } from './section-header/section-header.component';
 import { BreadcrumbModule } from 'xng-breadcrumb';
+import {SharedModule} from "../shared/shared.module";
 
 
 
@@ -18,11 +19,12 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
     // routeri kullanmak icin ekledik
     RouterModule,
     BreadcrumbModule, // yeni paket ekledigimizde core module de belirtiyoruz.
+    SharedModule,
     ToastrModule.forRoot({
       positionClass: 'toast-bottom-right',
       preventDuplicates: true
     })
-    
+
   ],
   // navbar com.  core in altina koyduktan sonra burada tanimladik.
   exports: [NavBarComponent

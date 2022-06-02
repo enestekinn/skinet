@@ -36,6 +36,7 @@ constructor(private router: Router,private toastr: ToastrService){
             this.router.navigateByUrl('/not-found');
           }
           if(error.status === 500){
+
             // navigate yapmadan once route a state gonderiyoruz.
             /* kisaca api mizde error: {details ile baslayan yeri diziyi component a gondermeye calisiyoruz. } */
             const navigationExtras: NavigationExtras = {state : {error: error.error}};
