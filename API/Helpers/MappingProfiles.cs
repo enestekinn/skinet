@@ -17,6 +17,8 @@ namespace API.Helpers
 
             // ReverseMap CreateMap i iki yonlu calistiriyor Address to AddressDto || AddressDto to Address
             CreateMap<Address, AddressDto>().ReverseMap();
+            CreateMap<CustomerBasketDto, CustomerBasket>();
+            CreateMap<BasketItemDto, BasketItem>();
         }
         
         
