@@ -1,6 +1,7 @@
 using API.Dtos;
 using AutoMapper;
 using Core.Entities;
+using Core.Entities.OrderAggregate;
 using Core.OrderAggregate;
 using Address = Core.Entities.Identity.Address;
 

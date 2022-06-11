@@ -18,6 +18,7 @@ import { RegisterComponent } from './account/register/register.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import {SharedModule} from "./shared/shared.module";
 import {JwtInterceptor} from "./core/interceptors/jwt.interceptor";
+import { OrdersComponent } from './orders/orders.component';
 
 @NgModule({
   declarations: [

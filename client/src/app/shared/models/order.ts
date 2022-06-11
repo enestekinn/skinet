@@ -25,4 +25,5 @@ export interface IOrderItem {
   pictureUrl: string;
   price: number;
   quantity: number;
+  total: number;
 }

@@ -9,7 +9,7 @@ import {ControlValueAccessor, NgControl} from "@angular/forms";
 export class TextInputComponent implements OnInit, ControlValueAccessor {
 @ViewChild('input',{static: true}) input: ElementRef;
 @Input() type ='text';
-@Input() label:string;
+@Input() label ='string';
 
 // in order to access the validaiton we need to get access to the control itself the way we can do it
   constructor(@Self() public  controlDir: NgControl) {
@@ -32,7 +32,8 @@ control.setAsyncValidators(asyncValidators);
 control.updateValueAndValidity();// this is going to try and validate our form on initialization
   }
 
-  onChange(event){}
+  onChange(event) {}
+
   onTouched(){}
 
   registerOnChange(fn: any): void {

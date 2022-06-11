@@ -26,8 +26,15 @@ data: {breadcrumb: 'Basket '}},
     canActivate: [AuthGuard],
     loadChildren: () => import('./checkout/checkout.module').then(mod => mod.CheckoutModule),
     data: {breadcrumb: 'Checkout'}},
+  {
+    path: 'orders',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./orders/orders.module').then(mod => mod.OrdersModule),
+    data: { breadcrumb: 'Orders' }
+  },
 
-  {path: 'account' ,loadChildren: () => import('./account/account.module').then(mod => mod.AccountModule),
+  {
+    path: 'account' ,loadChildren: () => import('./account/account.module').then(mod => mod.AccountModule),
     data: {breadcrumb: {skip: true}}},
  // {path: 'shop/:id', component: ProductDetailsComponent},// navigate yaparken id bu sekilde gonderiyoruz
   //pathMatch  matches against the entire url and it is important to do this when we redirecting empty path route

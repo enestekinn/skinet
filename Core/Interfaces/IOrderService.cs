@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Core.Entities.OrderAggregate;
 using Core.OrderAggregate;
 
 namespace Core.Interfaces

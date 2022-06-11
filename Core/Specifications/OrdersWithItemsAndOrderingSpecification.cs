@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+using Core.Entities.OrderAggregate;
 using Core.OrderAggregate;
 
 namespace Core.Specifications

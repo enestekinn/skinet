@@ -23,10 +23,24 @@ shipping =0;
 
   constructor(private http: HttpClient) { }
 
+  createPaymentIntent() {
+    return this.http.post(this.baseUrl + 'payments/' + this.getCurrentBasketValue().id, {})
+      .pipe(
+        map((basket: IBasket) => {
+          this.basketSource.next(basket);
+          console.log(this.getCurrentBasketValue());
+        })
+      )
+  }
+
 
 setShippingPrice(deliveryMethod: IDeliveryMethod){
     this.shipping = deliveryMethod.price;
+  const basket = this.getCurrentBasketValue();
+  basket.deliveryMethodId = deliveryMethod.id;
+  basket.shippingPrice = deliveryMethod.price;
     this.calculateTotals();
+  this.setBasket(basket);
 }
 getBasket(id: string){
 
@@ -34,9 +48,10 @@ getBasket(id: string){
   .pipe(
     map((basket: IBasket) => {
       this.basketSource.next(basket);
+      this.shipping = basket.shippingPrice;
       this.calculateTotals();
     })
-  );
+  )
 }
 
 
@@ -47,7 +62,7 @@ setBasket (basket: IBasket){
     this.calculateTotals()
   }, error =>{
     console.log(error);
-  });
+  })
 }
 
 
@@ -75,10 +90,10 @@ incrementItemQuantity(item: IBasketItem){
     const foundItemIndex = basket.items.findIndex(x => x.id === item.id)
     if (basket.items[foundItemIndex].quantity > 1){
       basket.items[foundItemIndex].quantity--;
-    }else {
+      this.setBasket(basket);
+    } else {
       this.removeItemFromBasket(item);
     }
-    this.setBasket(basket);
   }
 
   removeItemFromBasket(item: IBasketItem) {
@@ -94,18 +109,18 @@ if (basket.items.some( x=> x.id === item.id)){
   }
   deleteLocalBasket(id: string){
     this.basketSource.next(null);
-    this.basketSource.next(null);
+    this.basketTotalSource.next(null);
     localStorage.removeItem('basket_id');
   }
 
   deleteBasket(basket: IBasket) {
     return this.http.delete(this.baseUrl+ 'basket?id='+basket).subscribe(() =>{
       this.basketSource.next(null);
-      this.basketSource.next(null);
-      localStorage.removeItem('basket_id')
-    },error => {
+      this.basketTotalSource.next(null);
+      localStorage.removeItem('basket_id');
+    }, error => {
       console.log(error);
-    });
+    })
   }
 
 private  calculateTotals(){
