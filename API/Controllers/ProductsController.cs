@@ -36,11 +36,10 @@ Bunu Repository Pattern ile yapacagiz
             _repo = repo;
         } */
 
- public readonly IGenericRepository<Product> _productsRepo;
-        public readonly IGenericRepository<ProductBrand> _productBrandRepo;
-        public readonly IGenericRepository<ProductType> _productTypeRepo;
-        public readonly IMapper _mapper;
-
+        private readonly IGenericRepository<ProductBrand> _productBrandRepo;
+        private readonly IGenericRepository<ProductType> _productTypeRepo;
+        private readonly IGenericRepository<Product> _productsRepo;
+        private readonly IMapper _mapper;
         /* 
         constructor a birden fazla parametre ekledik bunu unit of work 
         pattern ile halledecegiz.
@@ -57,6 +56,7 @@ Bunu Repository Pattern ile yapacagiz
             _mapper = mapper;
         }
 
+        [Cached(600)]
         [HttpGet]
         public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts(
        [FromQuery] ProductSpecParams productParams
@@ -81,6 +81,7 @@ return Ok(new Pagination<ProductToReturnDto>(
     data));
         }
 
+        [Cached(600)]
         [HttpGet("{id}")]
 
 // hata oldugunda ApiResponse sinifindaki modeli donder
@@ -99,13 +100,15 @@ return _mapper.Map<Product,ProductToReturnDto>(product);
 
            // return await _productsRepo.GetByIdAsync(id);
         }
+        [Cached(600)]
         [HttpGet("brands")]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands(){
 
             return Ok(await _productBrandRepo.ListAllAsync());
         }
 
-         [HttpGet("types")]
+        [Cached(600)]
+        [HttpGet("types")]
         public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductTypes(){
             return Ok(await _productTypeRepo.ListAllAsync());
         }

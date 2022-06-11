@@ -1,11 +1,12 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IPagination } from '../shared/models/pagination';
-import  {IBrand} from '../shared/models/brands';
+import {IPagination, Pagination} from '../shared/models/pagination';
+import  {IBrand} from '../shared/models/brand';
 import { IType } from '../shared/models/productType';
 import { map } from 'rxjs/operators'; // rxjs calismazsa bunu import et
 import { ShopParams } from '../shared/models/shopParams';
 import { IProduct } from '../shared/models/product';
+import {of} from "rxjs";
 
 @Injectable({
   // root refer to app module
@@ -13,40 +14,66 @@ import { IProduct } from '../shared/models/product';
 })
 export class ShopService {
   baseUrl = 'https://localhost:5001/api/'
+  products: IProduct[] = [];
+  brands: IBrand[] = [];
+  types: IType [] = [];
+  pagination = new Pagination();
+  shopParams = new ShopParams();
+  productCache  = new Map();
 
   constructor(private http: HttpClient) { }
 
+
+  setShopParams(params: ShopParams){
+    this.shopParams = params;
+  }
+  getShopParams(){
+    return this.shopParams;
+  }
+
 //{{url}}/api/products?typeId=3&brandId=2
   //filtreleme icin 2 tane parametre koyduk
-  getProducts(shopParams: ShopParams){
+  getProducts(useCache: boolean){
 
+    if (useCache === false){
+      this.productCache = new Map();
+    }
+    if (this.productCache.size > 0 && useCache === true){
+      if (this.productCache.has(Object.values(this.shopParams).join('-'))){
+        this.pagination.data = this.productCache.get(Object.values(this.shopParams).join('-'));
+        return  of(this.pagination);
+      }
+    }
     // param nesnesi objesi olusrup query string olarak api endpoint e gonderiyoruz.
     let params = new HttpParams();
     // brand id miz varsa query string e ekliyoruz.
-    if(shopParams.brandId !== 0){
+    if(this.shopParams.brandId !== 0){
       // brandId (querty stirng) , brandId.toString() (value)
-      params = params.append('brandId',shopParams.brandId.toString())
+      params = params.append('brandId',this.shopParams.brandId.toString())
     }
-    if(shopParams.typeId !== 0){
-      params = params.append('typeId',shopParams.typeId.toString())
+    if(this.shopParams.typeId !== 0){
+      params = params.append('typeId',this.shopParams.typeId.toString())
     }
-    if(shopParams.search){
-      params = params.append('search',shopParams.search);
+    if(this.shopParams.search){
+      params = params.append('search',this.shopParams.search);
     }
 
 
-      params = params.append('sort',shopParams.sort);
+      params = params.append('sort',this.shopParams.sort);
 
 
-      params = params.append('pageIndex',shopParams.pageNumber.toString());
-      params = params.append('pageIndex',shopParams.pageSize.toString());
+      params = params.append('pageIndex',this.shopParams.pageNumber.toString());
+      params = params.append('pageIndex',this.shopParams.pageSize.toString());
 
     // observing response giving us http respond instead of body of request we have to extract the body out of this.
 
     return this.http.get<IPagination>(this.baseUrl + 'products',{observe: 'response',params})
     .pipe(
     map(response => {
+    this.productCache.set(Object.values(this.shopParams).join('-'),response.body.data);
+      this.pagination = response.body;
       return response.body; // response.body = IPagination object
+      return this.pagination;
     })
     );
   }
@@ -54,14 +81,40 @@ export class ShopService {
 
   // product details sayfasinda gostermek icin yeni method olusturuyoruz.
   getProduct(id: number){
+    //caching
+    //of we are returning unobservable of sth
+    let product: IProduct;
+    this.productCache.forEach((products: IProduct[]) => {
+      console.log(product);
+      product = products.find(p => p.id === id);
+    })
+    if (product){
+      return  of (product);
+    }
 return this.http.get<IProduct>(this.baseUrl + 'products/'+ id);
   }
 
   getBrands(){
-    return this.http.get<IBrand[]>(this.baseUrl + 'products/brands');
+    if (this.brands.length > 0){
+      return of(this.brands)
+    }
+    return this.http.get<IBrand[]>(this.baseUrl + 'products/brands').pipe(
+      map(response => {
+        this.brands =response;
+        return response;
+      })
+    );
   }
   getTypes(){
-    return this.http.get<IType[]>(this.baseUrl + 'products/types');
+    if (this.types.length>0){
+      return of(this.types)
+    }
+    return this.http.get<IType[]>(this.baseUrl + 'products/types').pipe(
+      map(response => {
+        this.types = response;
+        return response;
+      })
+    );
   }
 
 }

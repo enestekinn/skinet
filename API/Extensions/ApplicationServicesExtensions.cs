@@ -16,6 +16,11 @@ namespace API.Extensions
     {
    public static IServiceCollection AddApplicationServices(
        this IServiceCollection services)    {
+       
+       // caching must be singleton ready to avaiable when application starts shared all request coming to API
+       services.AddSingleton<IResponseCacheService, ResponseCacheService>();
+       
+       
            services.AddScoped<ITokenService,TokenService>();
            services.AddScoped<IOrderService, OrderService>();
            services.AddScoped<IPaymentService, PaymentService>();

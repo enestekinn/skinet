@@ -7,13 +7,14 @@ import { Component, Input, OnInit, Output,EventEmitter} from '@angular/core';
 })
 export class PagerComponent implements OnInit {
   @Input() totalCount: number;
-  @Input() pageSize: number; // Input we receive from parent component 
+  @Input() pageSize: number; // Input we receive from parent component
+  @Input() pageNumber: number;
 
   // Output Component is a way that a child component is going to be a child component on the shop components page.
   // we want to make call from child component
-  @Output() pageChanged = new EventEmitter<number>();  
+  @Output() pageChanged = new EventEmitter<number>();
 
-  // be careful there are two import for EventEmitter 
+  // be careful there are two import for EventEmitter
 
   constructor() { }
 
